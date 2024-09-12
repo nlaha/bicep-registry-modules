@@ -14,7 +14,7 @@ param collation string = ''
 @description('Optional. The charset of the database.')
 param charset string = ''
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' existing = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2023-12-01-preview' existing = {
   name: flexibleServerName
 }
 

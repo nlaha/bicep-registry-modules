@@ -134,6 +134,13 @@ param sourceServerResourceId string = ''
 @description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is \'Private Access\' - virtual network integration.')
 param delegatedSubnetResourceId string = ''
 
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Optional. Public network access is enabled or not.')
+param publicNetworkAcccess string = 'Enabled'
+
 @description('Optional. Private dns zone arm resource ID. Used when the desired connectivity mode is \'Private Access\' and required when \'delegatedSubnetResourceId\' is used. The Private DNS Zone must be lined to the Virtual Network referenced in \'delegatedSubnetResourceId\'.')
 param privateDnsZoneArmResourceId string = ''
 
@@ -238,7 +245,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2023-12-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -286,6 +293,9 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
       ? {
           delegatedSubnetResourceId: delegatedSubnetResourceId
           privateDnsZoneArmResourceId: privateDnsZoneArmResourceId
+          publicNetworkAccess: delegatedSubnetResourceId == ''
+            ? publicNetworkAcccess
+            : 'Disabled'
         }
       : null
     pointInTimeUTC: createMode == 'PointInTimeRestore' ? pointInTimeUTC : null
